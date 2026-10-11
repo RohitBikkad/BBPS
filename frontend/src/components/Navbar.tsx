@@ -72,16 +72,15 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
         <div className="flex items-center justify-between h-16">
           
           {/* Logo & School Name */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-            <div className="w-11 h-11 rounded-full p-0.5 bg-white border border-slate-200 shadow-sm flex items-center justify-center shrink-0">
-              <img src="/logo.png" alt="Bluebell Blossom Logo" className="w-full h-full object-contain rounded-full" />
-            </div>
-            <div>
-              <div className="flex items-center space-x-1.5">
-                <span className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg">Bluebell Blossom</span>
-                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 hidden sm:inline-block">Pre-Primary</span>
-              </div>
-              <p className="text-[11px] text-slate-500 font-medium hidden sm:block">Pre-primary School • Pune</p>
+          <div className="flex items-center space-x-2.5 cursor-pointer shrink-0" onClick={() => setActiveTab('dashboard')}>
+            <img src="/logo.png" alt="Logo" className="w-9 h-9 sm:w-10 sm:h-10 object-contain rounded-full border border-slate-200 shadow-xs" />
+            <div className="leading-tight">
+              <span className="font-extrabold text-slate-900 tracking-tight text-sm sm:text-base block">
+                Bluebell Blossom
+              </span>
+              <span className="text-[10px] text-purple-700 font-semibold tracking-wide uppercase block">
+                Pre-Primary School
+              </span>
             </div>
           </div>
 
