@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+*/node_modules/
+target/
+*/target/
+
+# Binaries & Logs
+*.exe
+*.log
+.system_generated/
+*.class
+
+# Environment
+.env
+.env.local
