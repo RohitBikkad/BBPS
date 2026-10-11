@@ -29,6 +29,7 @@ com\bbps\dto\AuthRequest.class
 com\bbps\model\LeaveRequest.class
 com\bbps\dto\DashboardStatsDto.class
 com\bbps\dto\StaffDto.class
+com\bbps\config\DatabaseUrlConfig.class
 com\bbps\dto\AttendanceApprovalRequest.class
 com\bbps\dto\BulkAttendanceApprovalRequest.class
 com\bbps\config\DataInitializer.class

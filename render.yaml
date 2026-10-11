@@ -22,8 +22,6 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
-    plan: free
-    region: oregon
     routes:
       - type: rewrite
         source: /api/*
@@ -39,6 +37,6 @@ databases:
   # 3. PostgreSQL Managed Database
   - name: bbps-db
     databaseName: bbps_db
-    user: postgres
+    user: bbps_admin
     plan: free
     region: oregon
