@@ -60,14 +60,17 @@ export const LoginPage: React.FC = () => {
         
         {/* School Crest & Header */}
         <div className="text-center">
-          <div className="inline-flex w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-green-600 items-center justify-center text-white shadow-xl shadow-emerald-500/30 mb-4 ring-4 ring-emerald-500/20">
-            <School className="w-9 h-9" />
+          <div className="inline-flex w-24 h-24 rounded-3xl bg-white p-1.5 items-center justify-center shadow-xl shadow-purple-950/40 mb-3 ring-4 ring-purple-400/30">
+            <img src="/logo.png" alt="Bluebell Blossom Pre-primary School Logo" className="w-full h-full object-contain rounded-2xl" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Bal Bharati Public School
+            Bluebell Blossom
           </h1>
-          <p className="mt-1 text-sm text-emerald-300 font-medium">
-            Staff Attendance & Leave Management Portal
+          <p className="text-sm font-bold text-purple-200 tracking-wide uppercase">
+            Pre-primary School
+          </p>
+          <p className="mt-1 text-xs text-purple-300 font-medium italic">
+            "We Celebrate Childhood!" • Vidyabharti Education Trust, Pune
           </p>
         </div>
 
@@ -144,7 +147,7 @@ export const LoginPage: React.FC = () => {
 
         {/* Footer info */}
         <p className="text-center text-xs text-slate-400 mt-6">
-          © 2026 Bal Bharati Public School. Production-ready staff portal.
+          © 2026 Bluebell Blossom Pre-primary School. Staff Attendance & Leave Portal.
         </p>
 
       </div>

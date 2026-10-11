@@ -52,7 +52,7 @@ export const PrincipalDashboard: React.FC<PrincipalDashboardProps> = ({ setActiv
             Welcome, {user?.fullName}
           </h1>
           <p className="mt-1 text-emerald-100 text-xs sm:text-sm">
-            {todayStr} • Bal Bharati Public School Overview
+            {todayStr} • Bluebell Blossom Pre-primary School Overview
           </p>
 
           {stats && stats.pendingAttendanceApprovals > 0 && (
