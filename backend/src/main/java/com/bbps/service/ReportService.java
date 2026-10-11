@@ -139,6 +139,54 @@ public class ReportService {
         }
     }
 
+    public byte[] generateLeaveExcel(List<LeaveResponseDto> records) throws IOException {
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Leave Applications Report");
+
+            // Header style
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            headerStyle.setFont(font);
+            headerStyle.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            String[] columns = {"Leave ID", "Employee ID", "Staff Name", "Department", "Leave Type", "Start Date", "End Date", "Total Days", "Paid Days", "Unpaid Days", "Final Status", "Supervisor Status", "Principal Status", "Reason"};
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < columns.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(columns[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            int rowIdx = 1;
+            for (LeaveResponseDto l : records) {
+                Row row = sheet.createRow(rowIdx++);
+                row.createCell(0).setCellValue(l.getId() != null ? l.getId() : 0);
+                row.createCell(1).setCellValue(l.getEmployeeId() != null ? l.getEmployeeId() : "");
+                row.createCell(2).setCellValue(l.getStaffName() != null ? l.getStaffName() : "");
+                row.createCell(3).setCellValue(l.getDepartment() != null ? l.getDepartment() : "");
+                row.createCell(4).setCellValue(l.getLeaveType() != null ? l.getLeaveType().name() : "");
+                row.createCell(5).setCellValue(l.getStartDate() != null ? l.getStartDate().toString() : "");
+                row.createCell(6).setCellValue(l.getEndDate() != null ? l.getEndDate().toString() : "");
+                row.createCell(7).setCellValue(l.getTotalDays() != null ? l.getTotalDays() : 0);
+                row.createCell(8).setCellValue(l.getPaidDays() != null ? l.getPaidDays() : 0);
+                row.createCell(9).setCellValue(l.getUnpaidDays() != null ? l.getUnpaidDays() : 0);
+                row.createCell(10).setCellValue(l.getFinalStatus() != null ? l.getFinalStatus().name() : "");
+                row.createCell(11).setCellValue(l.getSupervisorStatus() != null ? l.getSupervisorStatus().name() : "");
+                row.createCell(12).setCellValue(l.getPrincipalStatus() != null ? l.getPrincipalStatus().name() : "");
+                row.createCell(13).setCellValue(l.getReason() != null ? l.getReason() : "");
+            }
+
+            for (int i = 0; i < columns.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            workbook.write(out);
+            return out.toByteArray();
+        }
+    }
+
     public byte[] generateAttendanceCsv(List<AttendanceResponseDto> records) {
         StringBuilder sb = new StringBuilder();
         sb.append("Date,Employee ID,Staff Name,Department,Designation,Marked Status,Final Status,Approval Status,Approved By,Remarks\n");

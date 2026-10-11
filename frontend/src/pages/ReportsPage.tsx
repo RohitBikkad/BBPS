@@ -48,29 +48,68 @@ export const ReportsPage: React.FC = () => {
     fetchReport();
   }, [reportType, startDate, endDate, department, status]);
 
-  const handleExportExcel = () => {
-    const params = new URLSearchParams();
-    if (startDate) params.append('startDate', startDate);
-    if (endDate) params.append('endDate', endDate);
-    if (department) params.append('department', department);
-    if (status) params.append('status', status);
-    if (employeeId) params.append('employeeId', employeeId);
+  const [downloading, setDownloading] = useState<boolean>(false);
 
-    const token = localStorage.getItem('bbps_token');
-    window.open(`/api/reports/attendance/export/excel?${params.toString()}&token=${token}`, '_blank');
+  const downloadFile = async (endpoint: string, defaultFilename: string) => {
+    try {
+      setDownloading(true);
+      const params: any = {};
+      if (startDate) params.startDate = startDate;
+      if (endDate) params.endDate = endDate;
+      if (department) params.department = department;
+      if (status) params.status = status;
+      if (employeeId) params.employeeId = employeeId;
+
+      const response = await api.get(endpoint, {
+        params,
+        responseType: 'blob',
+      });
+
+      // Extract filename from Content-Disposition header if available
+      let filename = defaultFilename;
+      const disposition = response.headers['content-disposition'];
+      if (disposition && disposition.includes('filename=')) {
+        const match = disposition.match(/filename=["']?([^"';]+)["']?/);
+        if (match && match[1]) filename = match[1];
+      }
+
+      // Create download link
+      const contentType = (response.headers['content-type'] as string) || (defaultFilename.endsWith('.xlsx') ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' : 'text/csv');
+      const blob = new Blob([response.data], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      console.error('File export failed:', err);
+      alert('Failed to export file. Please ensure you are authorized.');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handleExportExcel = () => {
+    const endpoint = reportType === 'attendance'
+      ? '/reports/attendance/export/excel'
+      : '/reports/leaves/export/excel';
+    const filename = reportType === 'attendance'
+      ? 'bluebell_blossom_attendance_report.xlsx'
+      : 'bluebell_blossom_leave_report.xlsx';
+    downloadFile(endpoint, filename);
   };
 
   const handleExportCsv = () => {
-    const params = new URLSearchParams();
-    if (startDate) params.append('startDate', startDate);
-    if (endDate) params.append('endDate', endDate);
-    if (department) params.append('department', department);
-    if (status) params.append('status', status);
-    if (employeeId) params.append('employeeId', employeeId);
-
-    const token = localStorage.getItem('bbps_token');
-    const path = reportType === 'attendance' ? '/api/reports/attendance/export/csv' : '/api/reports/leaves/export/csv';
-    window.open(`${path}?${params.toString()}&token=${token}`, '_blank');
+    const endpoint = reportType === 'attendance'
+      ? '/reports/attendance/export/csv'
+      : '/reports/leaves/export/csv';
+    const filename = reportType === 'attendance'
+      ? 'bluebell_blossom_attendance_report.csv'
+      : 'bluebell_blossom_leave_report.csv';
+    downloadFile(endpoint, filename);
   };
 
   const handlePrint = () => {
@@ -89,19 +128,21 @@ export const ReportsPage: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-2">
-          {reportType === 'attendance' && (
-            <button
-              onClick={handleExportExcel}
-              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export Excel</span>
-            </button>
-          )}
+          <button
+            onClick={handleExportExcel}
+            disabled={downloading}
+            className="flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs disabled:opacity-60 transition-all"
+            title="Download formatted Excel workbook (.xlsx)"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>{downloading ? 'Exporting...' : 'Export Excel'}</span>
+          </button>
 
           <button
             onClick={handleExportCsv}
-            className="flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs"
+            disabled={downloading}
+            className="flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs disabled:opacity-60 transition-all"
+            title="Download CSV spreadsheet (.csv)"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export CSV</span>

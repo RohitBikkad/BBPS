@@ -50,7 +50,7 @@ public class ReportController {
         byte[] excelBytes = reportService.generateAttendanceExcel(list);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=bbps_attendance_report.xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=bluebell_blossom_attendance_report.xlsx")
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(excelBytes);
     }
@@ -68,7 +68,7 @@ public class ReportController {
         byte[] csvBytes = reportService.generateAttendanceCsv(list);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=bbps_attendance_report.csv")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=bluebell_blossom_attendance_report.csv")
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(csvBytes);
     }
@@ -98,8 +98,26 @@ public class ReportController {
         byte[] csvBytes = reportService.generateLeaveCsv(list);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=bbps_leave_report.csv")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=bluebell_blossom_leave_report.csv")
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(csvBytes);
+    }
+
+    @GetMapping("/leaves/export/excel")
+    public ResponseEntity<byte[]> exportLeaveExcel(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) String employeeId,
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) String leaveType,
+            @RequestParam(required = false) String status) throws IOException {
+
+        List<LeaveResponseDto> list = reportService.getFilteredLeaves(startDate, endDate, employeeId, department, leaveType, status);
+        byte[] excelBytes = reportService.generateLeaveExcel(list);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=bluebell_blossom_leave_report.xlsx")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(excelBytes);
     }
 }
