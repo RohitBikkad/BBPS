@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { School, Lock, User, AlertCircle, ArrowRight, ShieldCheck, Users, UserCheck, KeyRound, CheckCircle2 } from 'lucide-react';
+import { School, Lock, User, AlertCircle, ArrowRight, KeyRound, CheckCircle2 } from 'lucide-react';
 import api from '../api/client';
-import { Role } from '../types';
 
 export const LoginPage: React.FC = () => {
-  const { login, quickLoginAs } = useAuth();
-  const [username, setUsername] = useState<string>('principal@bbps.edu');
-  const [password, setPassword] = useState<string>('admin123');
+  const { login } = useAuth();
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,18 +26,6 @@ export const LoginPage: React.FC = () => {
       await login(username.trim(), password);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleQuickLogin = async (role: Role) => {
-    setLoading(true);
-    setError(null);
-    try {
-      await quickLoginAs(role);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Quick login failed');
     } finally {
       setLoading(false);
     }
@@ -152,72 +139,6 @@ export const LoginPage: React.FC = () => {
             </button>
 
           </form>
-
-          {/* Quick Demo Login Section */}
-          <div className="mt-8 pt-6 border-t border-slate-100">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block text-center mb-3">
-              Fast Demo Sign-In (1 Click)
-            </span>
-
-            <div className="space-y-2">
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('ROLE_PRINCIPAL')}
-                className="w-full flex items-center justify-between p-2.5 rounded-xl border border-amber-200 bg-amber-50/60 hover:bg-amber-100/70 text-left transition-colors"
-              >
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center">
-                    <ShieldCheck className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-amber-900">Principal / Admin</div>
-                    <div className="text-[10px] text-amber-700">Dr. Ananya Sharma</div>
-                  </div>
-                </div>
-                <span className="text-[10px] bg-white px-2 py-0.5 rounded-md text-amber-800 font-semibold border border-amber-200">
-                  EMP001
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('ROLE_SUPERVISOR')}
-                className="w-full flex items-center justify-between p-2.5 rounded-xl border border-blue-200 bg-blue-50/60 hover:bg-blue-100/70 text-left transition-colors"
-              >
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center">
-                    <Users className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-blue-900">Supervisor (Dept Head)</div>
-                    <div className="text-[10px] text-blue-700">Prof. Rajesh Verma</div>
-                  </div>
-                </div>
-                <span className="text-[10px] bg-white px-2 py-0.5 rounded-md text-blue-800 font-semibold border border-blue-200">
-                  EMP002
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('ROLE_STAFF')}
-                className="w-full flex items-center justify-between p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100/70 text-left transition-colors"
-              >
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
-                    <UserCheck className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-emerald-900">Teaching Staff</div>
-                    <div className="text-[10px] text-emerald-700">Pooja Malhotra (Physics)</div>
-                  </div>
-                </div>
-                <span className="text-[10px] bg-white px-2 py-0.5 rounded-md text-emerald-800 font-semibold border border-emerald-200">
-                  EMP004
-                </span>
-              </button>
-            </div>
-          </div>
 
         </div>
 
