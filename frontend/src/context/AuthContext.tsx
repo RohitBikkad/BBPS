@@ -10,7 +10,6 @@ interface AuthContextType {
   isLoading: boolean;
   login: (username: string, password: string) => Promise<AuthResponse>;
   logout: () => void;
-  quickLoginAs: (role: Role) => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -64,14 +63,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
-  const quickLoginAs = async (role: Role) => {
-    let email = 'principal@bbps.edu';
-    if (role === 'ROLE_SUPERVISOR') email = 'supervisor1@bbps.edu';
-    if (role === 'ROLE_STAFF') email = 'staff1@bbps.edu';
-
-    await login(email, 'admin123');
-  };
-
   const refreshProfile = async () => {
     try {
       const res = await api.get<AuthResponse>('/auth/me');
@@ -105,7 +96,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         login,
         logout,
-        quickLoginAs,
         refreshProfile,
       }}
     >

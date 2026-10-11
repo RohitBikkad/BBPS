@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Bell, LogOut, User, School, Sparkles, CheckCircle2, Shield, Users, UserCheck } from 'lucide-react';
+import { Bell, LogOut, User, School, CheckCircle2 } from 'lucide-react';
 import api from '../api/client';
 import { NotificationItem, Role } from '../types';
 
@@ -10,11 +10,10 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
-  const { user, role, logout, quickLoginAs } = useAuth();
+  const { user, role, logout } = useAuth();
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [showRoleSwitcher, setShowRoleSwitcher] = useState<boolean>(false);
 
   const fetchUnread = async () => {
     try {
@@ -171,57 +170,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
           {/* Right Header items */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             
-            {/* Quick Demo Role Switcher Pill */}
-            <div className="relative">
-              <button
-                onClick={() => setShowRoleSwitcher(!showRoleSwitcher)}
-                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all shadow-xs"
-                title="Switch demo role instantly"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                <span className="hidden sm:inline">Switch Role:</span>
-                <span className={`px-2 py-0.5 rounded-full border text-[11px] ${roleInfo.color}`}>
-                  {role === 'ROLE_PRINCIPAL' ? 'Principal' : role === 'ROLE_SUPERVISOR' ? 'Supervisor' : 'Staff'}
-                </span>
-              </button>
-
-              {showRoleSwitcher && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50">
-                  <div className="px-3 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    Instant Demo Switcher
-                  </div>
-                  <button
-                    onClick={() => { quickLoginAs('ROLE_PRINCIPAL'); setShowRoleSwitcher(false); }}
-                    className={`w-full flex items-center space-x-2.5 px-3 py-2 text-left text-xs font-medium hover:bg-slate-50 ${role === 'ROLE_PRINCIPAL' ? 'text-amber-700 bg-amber-50/60 font-semibold' : 'text-slate-700'}`}
-                  >
-                    <Shield className="w-4 h-4 text-amber-500" />
-                    <div>
-                      <div>Principal / Admin</div>
-                      <div className="text-[10px] text-slate-400">Dr. Ananya Sharma</div>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => { quickLoginAs('ROLE_SUPERVISOR'); setShowRoleSwitcher(false); }}
-                    className={`w-full flex items-center space-x-2.5 px-3 py-2 text-left text-xs font-medium hover:bg-slate-50 ${role === 'ROLE_SUPERVISOR' ? 'text-blue-700 bg-blue-50/60 font-semibold' : 'text-slate-700'}`}
-                  >
-                    <Users className="w-4 h-4 text-blue-500" />
-                    <div>
-                      <div>Supervisor (Science)</div>
-                      <div className="text-[10px] text-slate-400">Prof. Rajesh Verma</div>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => { quickLoginAs('ROLE_STAFF'); setShowRoleSwitcher(false); }}
-                    className={`w-full flex items-center space-x-2.5 px-3 py-2 text-left text-xs font-medium hover:bg-slate-50 ${role === 'ROLE_STAFF' ? 'text-emerald-700 bg-emerald-50/60 font-semibold' : 'text-slate-700'}`}
-                  >
-                    <UserCheck className="w-4 h-4 text-emerald-500" />
-                    <div>
-                      <div>Staff Member</div>
-                      <div className="text-[10px] text-slate-400">Pooja Malhotra (Physics)</div>
-                    </div>
-                  </button>
-                </div>
-              )}
+            {/* User Role Badge (Read-only) */}
+            <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-50 border border-slate-200">
+              <span className="hidden sm:inline text-slate-500 font-medium">Role:</span>
+              <span className={`px-2 py-0.5 rounded-full border text-[11px] ${roleInfo.color}`}>
+                {role === 'ROLE_PRINCIPAL' ? 'Principal' : role === 'ROLE_SUPERVISOR' ? 'Supervisor' : 'Staff'}
+              </span>
             </div>
 
             {/* Notification Bell */}
