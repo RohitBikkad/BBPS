@@ -28,7 +28,7 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: https://bbps-backend.onrender.com/api
+        value: https://bbps-backend-40h7.onrender.com/api
 
 databases:
   # 3. PostgreSQL Managed Database
