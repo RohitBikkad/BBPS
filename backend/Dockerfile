@@ -1,21 +1,15 @@
-# Multi-stage build for Spring Boot Backend
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM maven:3.9.9-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 
-# Copy maven wrapper / pom.xml
+ENV MAVEN_OPTS="-Xmx512m"
+
 COPY pom.xml .
 COPY src ./src
 
-# Install maven and package
-RUN apk add --no-cache maven && mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -B
 
-# Runtime image
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-
-# Non-root user for security
-RUN addgroup -S bbpsgroup && adduser -S bbpsuser -G bbpsgroup
-USER bbpsuser
 
 COPY --from=build /app/target/bbps-staff-portal-1.0.0.jar app.jar
 
