@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { School, Lock, User, AlertCircle, ArrowRight, KeyRound, CheckCircle2 } from 'lucide-react';
+import { School, Lock, User, AlertCircle, ArrowRight, KeyRound, CheckCircle2, Clock } from 'lucide-react';
 import api from '../api/client';
 
 export const LoginPage: React.FC = () => {
@@ -9,6 +9,12 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [slowNotice, setSlowNotice] = useState<boolean>(false);
+
+  // Pre-warm backend immediately on login page mount
+  useEffect(() => {
+    api.get('/auth/ping').catch(() => {});
+  }, []);
 
   // Forgot password modal state
   const [showForgot, setShowForgot] = useState<boolean>(false);
@@ -18,17 +24,35 @@ export const LoginPage: React.FC = () => {
   const [forgotMessage, setForgotMessage] = useState<string | null>(null);
   const [forgotError, setForgotError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const performLogin = async (userVal: string, passVal: string) => {
     setLoading(true);
     setError(null);
+    setSlowNotice(false);
+
+    const timer = setTimeout(() => {
+      setSlowNotice(true);
+    }, 1200);
+
     try {
-      await login(username.trim(), password);
+      await login(userVal.trim(), passVal);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
+      clearTimeout(timer);
       setLoading(false);
+      setSlowNotice(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await performLogin(username, password);
+  };
+
+  const handleDemoLogin = (u: string, p: string) => {
+    setUsername(u);
+    setPassword(p);
+    performLogin(u, p);
   };
 
   const handleForgotSubmit = async (e: React.FormEvent) => {
@@ -135,29 +159,34 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-emerald-600 hover:from-purple-700 hover:to-emerald-700 text-white font-bold text-sm shadow-lg shadow-purple-700/25 active:scale-[0.99] transition-all flex items-center justify-center space-x-2 disabled:opacity-60"
+              className="w-full mt-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-emerald-600 hover:from-purple-700 hover:to-emerald-700 text-white font-bold text-sm shadow-lg shadow-purple-700/25 active:scale-[0.99] transition-all flex items-center justify-center space-x-2 disabled:opacity-60 cursor-pointer"
             >
               <span>{loading ? 'Authenticating...' : 'Sign In'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
+
+            {slowNotice && (
+              <div className="mt-3 p-3 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center space-x-2.5 text-xs text-amber-900 animate-pulse">
+                <Clock className="w-4 h-4 text-amber-600 shrink-0 animate-spin" />
+                <span>Connecting to school server... (First connection after idle may take a moment to wake up)</span>
+              </div>
+            )}
 
           </form>
 
           {/* Quick Demo Logins Section */}
           <div className="mt-6 pt-5 border-t border-slate-100">
             <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 text-center mb-3">
-              Fast 1-Click Demo Access
+              Fast 1-Click Demo Sign-In
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {/* Parent Demo Button */}
               <button
                 type="button"
-                onClick={() => {
-                  setUsername('parent1@bbps.edu');
-                  setPassword('admin123');
-                }}
-                className="p-2.5 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100 text-left transition-all group col-span-1 sm:col-span-2 flex items-center justify-between"
+                disabled={loading}
+                onClick={() => handleDemoLogin('parent1@bbps.edu', 'admin123')}
+                className="p-2.5 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100 text-left transition-all group col-span-1 sm:col-span-2 flex items-center justify-between cursor-pointer disabled:opacity-60"
               >
                 <div>
                   <span className="block text-xs font-black text-purple-900">
@@ -168,22 +197,23 @@ export const LoginPage: React.FC = () => {
                   </span>
                 </div>
                 <span className="text-[10px] font-bold text-purple-600 px-2 py-0.5 rounded-md bg-white border border-purple-200 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                  Fill Demo
+                  1-Click Login ⚡
                 </span>
               </button>
 
               {/* Staff Demo Button */}
               <button
                 type="button"
-                onClick={() => {
-                  setUsername('staff1@bbps.edu');
-                  setPassword('admin123');
-                }}
-                className="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-left transition-all"
+                disabled={loading}
+                onClick={() => handleDemoLogin('staff1@bbps.edu', 'admin123')}
+                className="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-left transition-all cursor-pointer group disabled:opacity-60"
               >
-                <span className="block text-[11px] font-bold text-slate-800">
-                  👩‍🏫 Preschool Staff
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="block text-[11px] font-bold text-slate-800">
+                    👩‍🏫 Preschool Staff
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400 group-hover:text-emerald-700">1-Click ⚡</span>
+                </div>
                 <span className="block text-[10px] text-slate-500">
                   staff1@bbps.edu
                 </span>
@@ -192,15 +222,16 @@ export const LoginPage: React.FC = () => {
               {/* Principal Demo Button */}
               <button
                 type="button"
-                onClick={() => {
-                  setUsername('principal@bbps.edu');
-                  setPassword('admin123');
-                }}
-                className="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-left transition-all"
+                disabled={loading}
+                onClick={() => handleDemoLogin('principal@bbps.edu', 'admin123')}
+                className="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-left transition-all cursor-pointer group disabled:opacity-60"
               >
-                <span className="block text-[11px] font-bold text-slate-800">
-                  🏫 Principal / Admin
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="block text-[11px] font-bold text-slate-800">
+                    🏫 Principal / Admin
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400 group-hover:text-emerald-700">1-Click ⚡</span>
+                </div>
                 <span className="block text-[10px] text-slate-500">
                   principal@bbps.edu
                 </span>

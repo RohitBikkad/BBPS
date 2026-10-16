@@ -16,8 +16,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,21 +42,39 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @GetMapping("/ping")
+    public ResponseEntity<Map<String, Object>> ping() {
+        return ResponseEntity.ok(Map.of(
+                "status", "UP",
+                "timestamp", System.currentTimeMillis(),
+                "school", "Bluebell Blossom Pre-primary School"
+        ));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
-        User user = userRepository.findByEmployeeIdOrEmail(request.getUsername(), request.getUsername())
+        String identifier = request.getUsername() != null ? request.getUsername().trim() : "";
+        User user = userRepository.findByEmployeeIdOrEmail(identifier, identifier)
                 .orElseThrow(() -> new BadRequestException("Invalid credentials"));
 
         if (user.getStatus() != AccountStatus.ACTIVE) {
             throw new BadRequestException("Your account is currently " + user.getStatus() + ". Please contact administrator.");
         }
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getEmployeeId(), request.getPassword())
-        );
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BadRequestException("Invalid credentials");
+        }
 
+        // Generate token directly without redundant second database lookup
+        String jwt = tokenProvider.generateTokenForUsername(user.getEmployeeId(), user.getRole().name());
+
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(
+                new SimpleGrantedAuthority(user.getRole().name())
+        );
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                user.getEmployeeId(), null, authorities
+        );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.generateToken(authentication);
 
         AuthResponse response = new AuthResponse(
                 jwt,
