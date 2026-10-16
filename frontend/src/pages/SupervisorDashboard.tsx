@@ -62,6 +62,34 @@ export const SupervisorDashboard: React.FC<SupervisorDashboardProps> = ({ setAct
         )}
       </div>
 
+      {/* Pre-Primary Care & Classroom Desk Access */}
+      <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-3xl p-5 sm:p-6 text-white shadow-md border border-purple-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center space-x-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-2xl shrink-0">
+            🧸
+          </div>
+          <div>
+            <div className="flex items-center space-x-2">
+              <h2 className="text-base sm:text-lg font-bold text-white">Pre-Primary Classroom Care Desk</h2>
+              <span className="text-[10px] bg-purple-500/30 text-purple-200 px-2 py-0.5 rounded-full font-semibold border border-purple-400/30">
+                Toddler Care
+              </span>
+            </div>
+            <p className="text-xs text-purple-200 mt-0.5">
+              Review toddler routines, meal logs, mood tracking, classroom photos, and developmental milestones.
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setActiveTab('preprimary-desk')}
+          className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-purple-500 hover:bg-purple-600 text-white font-bold text-xs shadow-md transition-all shrink-0 cursor-pointer"
+        >
+          <span>Open Classroom Desk</span>
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+
       {/* Team Metrics (Section 4 & 19) */}
       <div>
         <div className="flex items-center justify-between mb-3 px-1">

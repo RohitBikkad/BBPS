@@ -46,9 +46,13 @@ export const AppContent: React.FC = () => {
       return <ParentPortalDashboard key={subTab} initialTab={subTab} />;
     }
 
+    if (activeTab.startsWith('preprimary-desk')) {
+      const parts = activeTab.split(':');
+      const sub = (parts[1] as 'roster' | 'milestones' | 'leaves' | 'broadcast' | 'students') || 'roster';
+      return <PrePrimaryTeacherDesk key={sub} initialTab={sub} />;
+    }
+
     switch (activeTab) {
-      case 'preprimary-desk':
-        return <PrePrimaryTeacherDesk />;
       case 'daily-approval':
         return <DailyApprovalPage />;
       case 'my-attendance':

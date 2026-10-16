@@ -120,6 +120,17 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
           </button>
         )}
 
+        {/* Pre-Primary Care Desk for Teachers & Staff */}
+        <button
+          onClick={() => setActiveTab('preprimary-desk')}
+          className={`flex flex-col items-center justify-center flex-1 h-full py-1 transition-all ${
+            activeTab.startsWith('preprimary-desk') ? 'text-purple-700 font-bold scale-105' : 'text-slate-400 hover:text-slate-600'
+          }`}
+        >
+          <Sparkles className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px]">Classroom 🧸</span>
+        </button>
+
         {/* Leaves */}
         <button
           onClick={() => setActiveTab('leaves')}

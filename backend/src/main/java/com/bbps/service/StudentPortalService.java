@@ -264,4 +264,61 @@ public class StudentPortalService {
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
+
+    @Transactional
+    public Student addStudent(Student student) {
+        if (student.getAdmissionNumber() == null || student.getAdmissionNumber().isBlank()) {
+            student.setAdmissionNumber("BBPS-" + LocalDate.now().getYear() + "-S" + (studentRepository.count() + 1));
+        }
+        return studentRepository.save(student);
+    }
+
+    @Transactional
+    public DevelopmentalMilestone awardMilestone(DevelopmentalMilestone milestone) {
+        if (milestone.getEvaluatedDate() == null) {
+            milestone.setEvaluatedDate(LocalDate.now());
+        }
+        return milestoneRepository.save(milestone);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentLeaveRequest> getAllStudentLeaves() {
+        return leaveRequestRepository.findAll();
+    }
+
+    @Transactional
+    public StudentLeaveRequest updateLeaveStatus(Long leaveId, String status, String remarks, String staffId) {
+        StudentLeaveRequest leave = leaveRequestRepository.findById(leaveId)
+                .orElseThrow(() -> new ResourceNotFoundException("Leave request not found"));
+        leave.setStatus(status);
+        leave.setTeacherRemarks(remarks);
+        leave.setReviewedByStaffId(staffId);
+        return leaveRequestRepository.save(leave);
+    }
+
+    @Transactional
+    public List<StudentDailyCareLog> bulkAttendance(String grade, String section, LocalDate date, String status, String checkInTime, String staffId) {
+        LocalDate targetDate = date != null ? date : LocalDate.now();
+        List<Student> students = studentRepository.findByGradeAndSection(grade, section);
+        if (students.isEmpty()) {
+            students = studentRepository.findByGrade(grade);
+        }
+
+        List<StudentDailyCareLog> updated = new ArrayList<>();
+        for (Student s : students) {
+            StudentDailyCareLog log = careLogRepository.findByStudentIdAndLogDate(s.getId(), targetDate)
+                    .orElse(new StudentDailyCareLog());
+            log.setStudentId(s.getId());
+            log.setLogDate(targetDate);
+            log.setAttendanceStatus(status != null ? status : "PRESENT");
+            if (checkInTime != null) {
+                log.setCheckInTime(checkInTime);
+            } else if ("PRESENT".equalsIgnoreCase(status) && log.getCheckInTime() == null) {
+                log.setCheckInTime("08:40 AM");
+            }
+            log.setRecordedByStaffId(staffId);
+            updated.add(careLogRepository.save(log));
+        }
+        return updated;
+    }
 }

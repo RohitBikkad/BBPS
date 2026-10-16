@@ -100,6 +100,55 @@ public class StudentPortalController {
         return ResponseEntity.ok(saved);
     }
 
+    @PostMapping("/teacher/students")
+    @PreAuthorize("hasAnyRole('STAFF', 'SUPERVISOR', 'PRINCIPAL')")
+    public ResponseEntity<Student> addStudent(
+            @RequestBody Student student) {
+        Student saved = studentPortalService.addStudent(student);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PostMapping("/teacher/milestones")
+    @PreAuthorize("hasAnyRole('STAFF', 'SUPERVISOR', 'PRINCIPAL')")
+    public ResponseEntity<DevelopmentalMilestone> awardMilestone(
+            @RequestBody DevelopmentalMilestone milestone) {
+        DevelopmentalMilestone saved = studentPortalService.awardMilestone(milestone);
+        return ResponseEntity.ok(saved);
+    }
+
+    @GetMapping("/teacher/leaves")
+    @PreAuthorize("hasAnyRole('STAFF', 'SUPERVISOR', 'PRINCIPAL')")
+    public ResponseEntity<List<StudentLeaveRequest>> getAllStudentLeaves() {
+        return ResponseEntity.ok(studentPortalService.getAllStudentLeaves());
+    }
+
+    @PatchMapping("/teacher/leaves/{id}/status")
+    @PreAuthorize("hasAnyRole('STAFF', 'SUPERVISOR', 'PRINCIPAL')")
+    public ResponseEntity<StudentLeaveRequest> updateLeaveStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body,
+            Authentication authentication) {
+        String staffId = authentication != null ? authentication.getName() : "STAFF";
+        String status = body.getOrDefault("status", "APPROVED");
+        String remarks = body.getOrDefault("remarks", "Approved by Class Mother Teacher");
+        StudentLeaveRequest updated = studentPortalService.updateLeaveStatus(id, status, remarks, staffId);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PostMapping("/teacher/bulk-attendance")
+    @PreAuthorize("hasAnyRole('STAFF', 'SUPERVISOR', 'PRINCIPAL')")
+    public ResponseEntity<List<StudentDailyCareLog>> bulkAttendance(
+            @RequestBody Map<String, Object> req,
+            Authentication authentication) {
+        String staffId = authentication != null ? authentication.getName() : "STAFF";
+        String grade = (String) req.getOrDefault("grade", "Nursery");
+        String section = (String) req.getOrDefault("section", "Butterflies");
+        String status = (String) req.getOrDefault("status", "PRESENT");
+        String checkInTime = (String) req.getOrDefault("checkInTime", "08:40 AM");
+        List<StudentDailyCareLog> logs = studentPortalService.bulkAttendance(grade, section, LocalDate.now(), status, checkInTime, staffId);
+        return ResponseEntity.ok(logs);
+    }
+
     @GetMapping("/students")
     public ResponseEntity<List<Student>> getAllStudents() {
         return ResponseEntity.ok(studentPortalService.getAllStudents());
