@@ -1,8 +1,8 @@
-name: Keep Render Backend Awake
+name: Keep Render Backend Awake (Daytime Only)
 
 on:
   schedule:
-    # Runs every 14 minutes to prevent Render free-tier 15-minute sleep
+    # Runs every 14 minutes
     - cron: '*/14 * * * *'
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab
 
@@ -10,9 +10,21 @@ jobs:
   keep-alive:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Render Backend
+      - name: Ping Render Backend During Daytime
         run: |
-          echo "Sending silent keep-alive ping to BBPS backend at $(date)..."
+          # Check Indian Standard Time (IST)
+          CURRENT_HOUR_IST=$(TZ='Asia/Kolkata' date +'%H')
+          CURRENT_TIME_IST=$(TZ='Asia/Kolkata' date +'%Y-%m-%d %H:%M:%S IST')
+          echo "Current Time: $CURRENT_TIME_IST (Hour: $CURRENT_HOUR_IST)"
+
+          # Sleep window: Between 11:00 PM (23:00) and 6:00 AM (06:00) IST
+          if [ "$CURRENT_HOUR_IST" -ge 23 ] || [ "$CURRENT_HOUR_IST" -lt 6 ]; then
+            echo "🌙 Nighttime sleep window active (11:00 PM to 6:00 AM IST)."
+            echo "Skipping ping so Render free tier can go offline and conserve resources."
+            exit 0
+          fi
+
+          echo "☀️ Daytime active window (6:00 AM to 11:00 PM IST). Sending keep-alive ping..."
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://bbps-backend-40h7.onrender.com/api/auth/ping)
           echo "Response HTTP Status: $HTTP_STATUS"
           if [ "$HTTP_STATUS" -eq 200 ]; then

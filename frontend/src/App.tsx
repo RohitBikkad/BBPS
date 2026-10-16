@@ -22,10 +22,15 @@ export const AppContent: React.FC = () => {
   const { isAuthenticated, isLoading, role } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('dashboard');
 
-  // Silent background keep-alive ping every 10 minutes so Render never sleeps while the app is active
+  // Silent background keep-alive ping every 10 minutes between 6:00 AM and 11:00 PM.
+  // Stops pinging after 11:00 PM to 6:00 AM so Render goes to sleep at night.
   useEffect(() => {
     const keepAliveTimer = setInterval(() => {
-      api.get('/auth/ping').catch(() => {});
+      const currentHour = new Date().getHours();
+      // Daytime window: 6 AM to 11 PM (hours 6 through 22)
+      if (currentHour >= 6 && currentHour < 23) {
+        api.get('/auth/ping').catch(() => {});
+      }
     }, 10 * 60 * 1000);
 
     return () => clearInterval(keepAliveTimer);
