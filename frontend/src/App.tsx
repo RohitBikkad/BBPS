@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from './context/AuthContext';
+import api from './api/client';
 import { Navbar } from './components/Navbar';
 import { BottomNav } from './components/BottomNav';
 import { LoginPage } from './pages/LoginPage';
@@ -20,6 +21,15 @@ import { School } from 'lucide-react';
 export const AppContent: React.FC = () => {
   const { isAuthenticated, isLoading, role } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('dashboard');
+
+  // Silent background keep-alive ping every 10 minutes so Render never sleeps while the app is active
+  useEffect(() => {
+    const keepAliveTimer = setInterval(() => {
+      api.get('/auth/ping').catch(() => {});
+    }, 10 * 60 * 1000);
+
+    return () => clearInterval(keepAliveTimer);
+  }, []);
 
   if (isLoading) {
     return (
