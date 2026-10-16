@@ -61,6 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   const getRoleLabel = (r: Role | null) => {
     if (r === 'ROLE_PRINCIPAL') return { label: 'Principal / Admin', color: 'bg-amber-100 text-amber-800 border-amber-200' };
     if (r === 'ROLE_SUPERVISOR') return { label: 'Supervisor', color: 'bg-blue-100 text-blue-800 border-blue-200' };
+    if (r === 'ROLE_PARENT') return { label: 'Pre-Primary Parent', color: 'bg-purple-100 text-purple-800 border-purple-200' };
     return { label: 'Teaching Staff', color: 'bg-emerald-100 text-emerald-800 border-emerald-200' };
   };
 
@@ -86,84 +87,141 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
 
           {/* Center navigation for Desktop */}
           <nav className="hidden md:flex items-center space-x-1">
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activeTab === 'dashboard' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              Dashboard
-            </button>
-
-            {role === 'ROLE_PRINCIPAL' && (
+            {role === 'ROLE_PARENT' ? (
               <>
                 <button
-                  onClick={() => setActiveTab('daily-approval')}
+                  onClick={() => setActiveTab('dashboard')}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    activeTab === 'daily-approval' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    activeTab === 'dashboard' ? 'bg-purple-100 text-purple-800 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
-                  Attendance Approval
+                  Today at School
                 </button>
                 <button
-                  onClick={() => setActiveTab('staff-management')}
+                  onClick={() => setActiveTab('moments')}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    activeTab === 'staff-management' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    activeTab === 'moments' ? 'bg-purple-100 text-purple-800 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
-                  Staff Management
+                  Moments & Art 📸
+                </button>
+                <button
+                  onClick={() => setActiveTab('pickups')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    activeTab === 'pickups' ? 'bg-purple-100 text-purple-800 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  Pickup Gate Pass 🛡️
+                </button>
+                <button
+                  onClick={() => setActiveTab('milestones')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    activeTab === 'milestones' ? 'bg-purple-100 text-purple-800 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  Growth Badges 🌟
+                </button>
+                <button
+                  onClick={() => setActiveTab('fees')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    activeTab === 'fees' ? 'bg-purple-100 text-purple-800 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  Fee Receipts
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => setActiveTab('dashboard')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    activeTab === 'dashboard' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  Dashboard
+                </button>
+
+                {/* Pre-primary desk for teachers and admins */}
+                <button
+                  onClick={() => setActiveTab('preprimary-desk')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    activeTab === 'preprimary-desk' ? 'bg-purple-50 text-purple-700 font-bold' : 'text-purple-600 hover:text-purple-900 hover:bg-purple-50/50'
+                  }`}
+                >
+                  🧸 Pre-Primary Care Desk
+                </button>
+
+                {role === 'ROLE_PRINCIPAL' && (
+                  <>
+                    <button
+                      onClick={() => setActiveTab('daily-approval')}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        activeTab === 'daily-approval' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      }`}
+                    >
+                      Attendance Approval
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('staff-management')}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        activeTab === 'staff-management' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      }`}
+                    >
+                      Staff Management
+                    </button>
+                  </>
+                )}
+
+                {role === 'ROLE_SUPERVISOR' && (
+                  <button
+                    onClick={() => setActiveTab('supervisor-team')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      activeTab === 'supervisor-team' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    }`}
+                  >
+                    Team Attendance
+                  </button>
+                )}
+
+                {role === 'ROLE_STAFF' && (
+                  <button
+                    onClick={() => setActiveTab('my-attendance')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      activeTab === 'my-attendance' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    }`}
+                  >
+                    My Attendance
+                  </button>
+                )}
+
+                <button
+                  onClick={() => setActiveTab('leaves')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    activeTab === 'leaves' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  Leaves
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('reports')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    activeTab === 'reports' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  Reports
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('calendar')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    activeTab === 'calendar' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  Calendar
                 </button>
               </>
             )}
-
-            {role === 'ROLE_SUPERVISOR' && (
-              <button
-                onClick={() => setActiveTab('supervisor-team')}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  activeTab === 'supervisor-team' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
-                Team Attendance
-              </button>
-            )}
-
-            {role === 'ROLE_STAFF' && (
-              <button
-                onClick={() => setActiveTab('my-attendance')}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  activeTab === 'my-attendance' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
-                My Attendance
-              </button>
-            )}
-
-            <button
-              onClick={() => setActiveTab('leaves')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activeTab === 'leaves' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              Leaves
-            </button>
-
-            <button
-              onClick={() => setActiveTab('reports')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activeTab === 'reports' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              Reports
-            </button>
-
-            <button
-              onClick={() => setActiveTab('calendar')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activeTab === 'calendar' ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              Calendar
-            </button>
           </nav>
 
           {/* Right Header items */}
@@ -173,7 +231,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-50 border border-slate-200">
               <span className="hidden sm:inline text-slate-500 font-medium">Role:</span>
               <span className={`px-2 py-0.5 rounded-full border text-[11px] ${roleInfo.color}`}>
-                {role === 'ROLE_PRINCIPAL' ? 'Principal' : role === 'ROLE_SUPERVISOR' ? 'Supervisor' : 'Staff'}
+                {role === 'ROLE_PRINCIPAL' ? 'Principal' : role === 'ROLE_SUPERVISOR' ? 'Supervisor' : role === 'ROLE_PARENT' ? 'Parent' : 'Staff'}
               </span>
             </div>
 

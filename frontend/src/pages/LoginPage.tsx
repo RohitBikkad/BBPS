@@ -135,13 +135,78 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-sm shadow-lg shadow-emerald-700/25 active:scale-[0.99] transition-all flex items-center justify-center space-x-2 disabled:opacity-60"
+              className="w-full mt-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-emerald-600 hover:from-purple-700 hover:to-emerald-700 text-white font-bold text-sm shadow-lg shadow-purple-700/25 active:scale-[0.99] transition-all flex items-center justify-center space-x-2 disabled:opacity-60"
             >
               <span>{loading ? 'Authenticating...' : 'Sign In'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
           </form>
+
+          {/* Quick Demo Logins Section */}
+          <div className="mt-6 pt-5 border-t border-slate-100">
+            <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 text-center mb-3">
+              Fast 1-Click Demo Access
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {/* Parent Demo Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setUsername('parent1@bbps.edu');
+                  setPassword('admin123');
+                }}
+                className="p-2.5 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100 text-left transition-all group col-span-1 sm:col-span-2 flex items-center justify-between"
+              >
+                <div>
+                  <span className="block text-xs font-black text-purple-900">
+                    👨‍👩‍👧 Pre-Primary Parent
+                  </span>
+                  <span className="block text-[10px] text-purple-700 font-medium">
+                    Aarav's Dad • Nursery Butterflies (parent1@bbps.edu)
+                  </span>
+                </div>
+                <span className="text-[10px] font-bold text-purple-600 px-2 py-0.5 rounded-md bg-white border border-purple-200 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                  Fill Demo
+                </span>
+              </button>
+
+              {/* Staff Demo Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setUsername('staff1@bbps.edu');
+                  setPassword('admin123');
+                }}
+                className="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-left transition-all"
+              >
+                <span className="block text-[11px] font-bold text-slate-800">
+                  👩‍🏫 Preschool Staff
+                </span>
+                <span className="block text-[10px] text-slate-500">
+                  staff1@bbps.edu
+                </span>
+              </button>
+
+              {/* Principal Demo Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setUsername('principal@bbps.edu');
+                  setPassword('admin123');
+                }}
+                className="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-left transition-all"
+              >
+                <span className="block text-[11px] font-bold text-slate-800">
+                  🏫 Principal / Admin
+                </span>
+                <span className="block text-[10px] text-slate-500">
+                  principal@bbps.edu
+                </span>
+              </button>
+            </div>
+          </div>
 
         </div>
 

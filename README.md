@@ -48,15 +48,17 @@ Production-ready, responsive, mobile-first web application designed for school s
 
 | Role | Name & Designation | Employee ID / Email | Password |
 |---|---|---|---|
+| **Pre-Primary Parent** | Mr. Vikram Sharma (Aarav's Dad • Nursery Butterflies) | `PAR001` / `parent1@bbps.edu` | `admin123` |
+| **Pre-Primary Parent** | Mrs. Priya Verma (Ananya's Mom • KG Dolphins) | `PAR002` / `parent2@bbps.edu` | `admin123` |
 | **Principal / Admin** | Dr. Ananya Sharma (Principal & Director) | `EMP001` / `principal@bbps.edu` | `admin123` |
 | **Supervisor** | Prof. Rajesh Verma (Head of Science) | `EMP002` / `supervisor1@bbps.edu` | `admin123` |
 | **Supervisor** | Mrs. Sunita Rao (Academic Coordinator) | `EMP003` / `supervisor2@bbps.edu` | `admin123` |
 | **Staff Member** | Pooja Malhotra (Senior Physics Teacher) | `EMP004` / `staff1@bbps.edu` | `admin123` |
 | **Staff Member** | Amitabh Sen (Chemistry Teacher) | `EMP005` / `staff2@bbps.edu` | `admin123` |
-| **Staff Member** | Neha Kapoor (English Teacher) | `EMP006` / `staff3@bbps.edu` | `admin123` |
+| **Staff Member** | Neha Kapoor (English Teacher & Mother Teacher) | `EMP006` / `staff3@bbps.edu` | `admin123` |
 | **Staff Member** | Vikram Mehta (PGT Mathematics) | `EMP007` / `staff4@bbps.edu` | `admin123` |
 
-> 💡 **Tip:** The login screen includes a **"Fast Demo Sign-In"** button for each role, allowing instant 1-click access without manual typing. The top navigation bar also features an on-the-fly **Role Switcher** for fast testing across roles.
+> 💡 **Tip:** The login screen includes a **"Fast Demo Sign-In"** button for each role (including 1-click **Pre-Primary Parent** sign-in), allowing instant access without manual typing. Teachers also have access to the **🧸 Pre-Primary Care Desk** to publish live meal, mood, and photo updates in under 30 seconds.
 
 ---
 

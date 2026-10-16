@@ -13,6 +13,8 @@ import { LeaveApplicationPage } from './pages/LeaveApplicationPage';
 import { StaffManagementPage } from './pages/StaffManagementPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { SchoolCalendarPage } from './pages/SchoolCalendarPage';
+import { ParentPortalDashboard } from './pages/ParentPortalDashboard';
+import { PrePrimaryTeacherDesk } from './pages/PrePrimaryTeacherDesk';
 import { School } from 'lucide-react';
 
 export const AppContent: React.FC = () => {
@@ -38,7 +40,15 @@ export const AppContent: React.FC = () => {
 
   // Render view by active tab & role
   const renderContent = () => {
+    // If Parent, default to Parent Portal with selected sub-tab
+    if (role === 'ROLE_PARENT') {
+      const subTab = activeTab === 'dashboard' ? 'today' : activeTab === 'leaves' ? 'history' : activeTab;
+      return <ParentPortalDashboard key={subTab} initialTab={subTab} />;
+    }
+
     switch (activeTab) {
+      case 'preprimary-desk':
+        return <PrePrimaryTeacherDesk />;
       case 'daily-approval':
         return <DailyApprovalPage />;
       case 'my-attendance':
