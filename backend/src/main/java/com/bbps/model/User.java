@@ -43,7 +43,7 @@ public class User {
     private String supervisorEmployeeId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, length = 30)
+    @Column(name = "role", nullable = false, length = 30, columnDefinition = "varchar(30)")
     private Role role;
 
     @Enumerated(EnumType.STRING)

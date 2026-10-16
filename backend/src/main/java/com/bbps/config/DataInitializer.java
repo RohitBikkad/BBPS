@@ -3,6 +3,7 @@ package com.bbps.config;
 import com.bbps.model.*;
 import com.bbps.repository.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,7 @@ public class DataInitializer implements CommandLineRunner {
     private final StudentLeaveRequestRepository studentLeaveRepository;
     private final StudentFeeRecordRepository feeRepository;
     private final PackTomorrowReminderRepository reminderRepository;
+    private final JdbcTemplate jdbcTemplate;
 
     public DataInitializer(UserRepository userRepository,
                            AttendanceRepository attendanceRepository,
@@ -44,7 +46,8 @@ public class DataInitializer implements CommandLineRunner {
                            DevelopmentalMilestoneRepository milestoneRepository,
                            StudentLeaveRequestRepository studentLeaveRepository,
                            StudentFeeRecordRepository feeRepository,
-                           PackTomorrowReminderRepository reminderRepository) {
+                           PackTomorrowReminderRepository reminderRepository,
+                           JdbcTemplate jdbcTemplate) {
         this.userRepository = userRepository;
         this.attendanceRepository = attendanceRepository;
         this.auditRepository = auditRepository;
@@ -61,10 +64,13 @@ public class DataInitializer implements CommandLineRunner {
         this.studentLeaveRepository = studentLeaveRepository;
         this.feeRepository = feeRepository;
         this.reminderRepository = reminderRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public void run(String... args) {
+        dropRoleCheckConstraintIfExists();
+
         String defaultPw = passwordEncoder.encode("admin123");
 
         if (userRepository.count() == 0) {
@@ -73,6 +79,35 @@ public class DataInitializer implements CommandLineRunner {
 
         if (studentRepository.count() == 0) {
             seedStudentAndParentData(defaultPw);
+        }
+    }
+
+    private void dropRoleCheckConstraintIfExists() {
+        try {
+            jdbcTemplate.execute("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check");
+        } catch (Exception e) {
+            System.err.println("Note: could not execute simple drop on users_role_check: " + e.getMessage());
+        }
+
+        try {
+            jdbcTemplate.execute("""
+                DO $$
+                DECLARE
+                    r RECORD;
+                BEGIN
+                    FOR r IN (
+                        SELECT conname
+                        FROM pg_constraint con
+                        INNER JOIN pg_class rel ON rel.oid = con.conrelid
+                        INNER JOIN pg_attribute a ON a.attrelid = rel.oid AND a.attnum = ANY(con.conkey)
+                        WHERE rel.relname = 'users' AND a.attname = 'role' AND con.contype = 'c'
+                    ) LOOP
+                        EXECUTE 'ALTER TABLE users DROP CONSTRAINT IF EXISTS ' || quote_ident(r.conname);
+                    END LOOP;
+                END $$;
+            """);
+        } catch (Exception e) {
+            System.err.println("Note: could not execute dynamic drop on users role check: " + e.getMessage());
         }
     }
 
