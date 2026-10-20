@@ -25,7 +25,7 @@ jobs:
           fi
 
           echo "☀️ Daytime active window (6:00 AM to 11:00 PM IST). Sending keep-alive ping..."
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://bbps-backend-40h7.onrender.com/api/auth/ping)
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://bbps-backend-40h7.onrender.com/api/auth/ping || true)
           echo "Response HTTP Status: $HTTP_STATUS"
           if [ "$HTTP_STATUS" -eq 200 ]; then
             echo "Success: Render backend is awake and healthy!"
