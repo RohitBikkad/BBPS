@@ -1,4 +1,4 @@
-# Bal Bharati Public School (BBPS)
+# Bluebell Blossom Pre-primary School (BBPS)
 ## Mobile-First School Staff Attendance & Leave Management Web Application
 
 Production-ready, responsive, mobile-first web application designed for school staff attendance tracking, multi-step leave approvals, Principal daily verification, audit history, and compliant reporting.
